@@ -1,52 +1,37 @@
 <template>
-<div id="app" v-cloak>
-
-  <div class="row">
-    <div class="large-12 columns">
-      <h1>{{ quiz.title }}</h1>
-
-      <div class="callout">
-
-        <div v-for="(question, index) in quiz.questions">
-          <!-- Hide all questions, show only the one with index === to current question index -->
-          <div v-show="index === questionIndex">
-            <h3>{{ question.text }}</h3>
-            <ol>
-              <!-- for each response of the current question -->
-              <li v-for="response in question.responses">
-                <label>
-                    <input type="radio"
-                           v-bind:value="response.value"
-                           v-bind:name="index"
-                           v-model="userResponses[index]"> {{response.text}}
-                  </label>
-              </li>
-
-            </ol>
-            <!-- The two navigation buttons -->
-            <!-- Note: prev is hidden on first question -->
-            <button class="secondary button" v-if="questionIndex > 0" v-on:click="prev">
-              prev
-            </button>
-            <button class="success button" v-on:click="next">
-              next
-            </button>
+<div id="app" class="quiz" v-cloak>
+  <div class="container">
+    <div class="quiz__wrapper">
+      <div
+        v-for="( item, index ) in quiz.questions"
+        class="quiz__question">
+        <div
+          class="quiz__question-box"
+          v-show="index === questionIndex">
+          <strong class="quiz__question-title">{{ item.text }}</strong>
+          <div class="quiz__inputs-wrapper">
+            <p
+              v-for="( data, i ) in item.responses"
+              class="quiz__question-input"
+              :class="{ 'quiz__question-input_state-active ':data.isChecked }"
+              @click="inputsToggle( data, i)"
+              >
+              {{ data.text }}
+              <span
+                class="quiz__checkbox"
+                :class="{ 'quiz__checkbox_state-active ':data.isChecked }"
+                ></span>
+            </p>
           </div>
         </div>
-
-        <!-- Last page, quiz is finished, display result -->
-        <div v-show="questionIndex === quiz.questions.length">
-          <h3>Your Results</h3>
-          <p>
-            <!-- You are: {{ score() }} -->
-          </p>
-        </div>
-
       </div>
-
+      <button
+        @click="next"
+        class="quiz__next-button">
+        Далее
+      </button>
     </div>
   </div>
-
 </div>
 </template>
 
@@ -63,85 +48,51 @@ export default {
     return {
       quiz: {
         title: 'What superhero are you?',
-        questions: [{
-                    text: "How would you describe your personality?",
-                    responses: [{
-                            text: 'Im serious and dark',
-                            value: 'Batman'
-                        },
-                        {
-                            text: 'Arrogant, but charming',
-                            value: 'Superman'
-                        },
-                        {
-                            text: 'Fun and easy going',
-                            value: 'The Flash'
-                        }
-                    ]
+        questions:
+          [
+            {
+              text: "How would you describe your personality?",
+              responses: [{
+                  id: 0,
+                  text: 'Im serious and dark',
+                  value: 'Batman',
+                  isChecked: false,
+                },
+                {
+                  id: 1,
+                  text: 'Arrogant, but charming',
+                  value: 'Superman',
+                  isChecked: false,
+                },
+                {
+                  id: 2,
+                  text: 'Fun and easy going',
+                  value: 'The Flash',
+                  isChecked: false,
+                }
+              ]
             },
             {
-                text: "Why did you want to become a superhero?",
-                responses: [{
-                        text: 'For the thrills',
-                        value: 'The Flash'
-                    },
-                    {
-                        text: 'For justice',
-                        value: 'Batman'
-                    },
-                    {
-                        text: 'For popularity',
-                        value: 'Superman'
-                    }
-                ]
-            },
-            {
-                text: "Who would you most hang around with?",
-                responses: [{
-                        text: 'Wonder Woman',
-                        value: 'Superman'
-                    },
-                    {
-                        text: 'Green Arrow',
-                        value: 'The Flash'
-                    },
-                    {
-                        text: 'Robin',
-                        value: 'Batman'
-                    }
-                ]
-            },
-            {
-                text: "What's your favourite colour?",
-                responses: [{
-                        text: 'Black',
-                        value: 'Batman'
-                    },
-                    {
-                        text: 'Red',
-                        value: 'The Flash'
-                    },
-                    {
-                        text: 'Blue',
-                        value: 'Superman'
-                    }
-                ]
-            },
-            {
-                text: "When do you help people?",
-                responses: [{
-                        text: 'Every chance I can',
-                        value: 'The Flash'
-                    },
-                    {
-                        text: 'At night',
-                        value: 'Batman'
-                    },
-                    {
-                        text: 'When they need me to',
-                        value: 'Superman'
-                    }
-                ]
+              text: "Why did you want to become a superhero?",
+              responses: [{
+                  id: 1,
+                  text: 'For the thrills',
+                  value: 'The Flash',
+                  isChecked: false,
+                },
+                {
+                  id: 2,
+                  text: 'For justice',
+                  value: 'Batman',
+                  isChecked: false,
+                },
+                {
+                  id: 3,
+                  text: 'For popularity',
+                  value: 'Superman',
+                  isChecked: false,
+                }
+              ]
             },
           ]
       },
@@ -150,42 +101,37 @@ export default {
     }
   },
   methods: {
-      // Go to next question
-      next () {
-          this.questionIndex++;
-          console.log(this.userResponses);
-      },
-      // Go to previous question
-      prev () {
-          this.questionIndex--;
-      },
-      // score () {
-      //     //find the highest occurence in responses
-      //     var modeMap = {};
-      //     var maxEl = this.userResponses[0],
-      //         maxCount = 1;
-      //     for (var i = 0; i < this.userResponses.length; i++) {
-      //         var el = this.userResponses[i];
-      //         if (modeMap[el] == null)
-      //             modeMap[el] = 1;
-      //         else
-      //             modeMap[el]++;
-      //         if (modeMap[el] > maxCount) {
-      //             maxEl = el;
-      //             maxCount = modeMap[el];
-      //         }
-      //     }
-      //     return maxEl;
-      // }
+    inputsToggle ( data, i ) {
+
+      // let arr = this.menuLists;
+      // arr.forEach( function( item ) {
+      //   setTimeout( () =>
+      //     item.isVisible = !item.isVisible
+      //   , item.dataFade );
+      // } );
+      console.log(data.isChecked);
+      console.log(i);
+      return data.isChecked = !data.isChecked;
+    },
+    // Go to next question
+    next () {
+        this.questionIndex++;
+        console.log(this.userResponses);
+    },
+    // Go to previous question
+    prev () {
+        this.questionIndex--;
+    },
   }
 }
 </script>
 
 <style>
 #app {
-  min-height: 100vh;
-
-  background: #BBC7CE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
 #app > .row {
