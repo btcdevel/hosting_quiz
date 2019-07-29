@@ -100,4 +100,16 @@ body{
     border: none;
     font-size: 18px;
   }
+
+  &__prev-button {
+    margin-right: 3px;
+    padding: 7px 20px;
+    color: #000;
+    cursor: pointer;
+    background-color: #365cb500;
+    border: none;
+    outline: 3px solid;
+    font-size: 18px;
+    transition: all .4s ease-in-out;
+  }
 }

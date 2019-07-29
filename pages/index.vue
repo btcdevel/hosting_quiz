@@ -26,6 +26,14 @@
         </div>
       </div>
       <button
+        @click="prev"
+        class="quiz__prev-button"
+        v-show="questionIndex > 0"
+        >
+
+        Назад
+      </button>
+      <button
         @click="next"
         class="quiz__next-button">
         Далее
